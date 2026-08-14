@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // tira a bolinha preta do canto durante o dev, que atrapalha conferir o layout
+  devIndicators: false,
 };
 
 export default nextConfig;
