@@ -355,30 +355,28 @@ body {
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .bg {
-    animation: revela 1.1s ease-out backwards;
-  }
-  .t,
-  .form {
-    animation: surge 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
-  }
-  .t-data {
-    animation-delay: 0.18s;
-  }
-  .t-titulo {
-    animation-delay: 0.3s;
-  }
-  .t-prevenda {
-    animation-delay: 0.5s;
-  }
-  .form {
-    animation-delay: 0.62s;
-  }
-  .t-chamada {
-    animation-delay: 0.76s;
-  }
-  .som {
-    animation: revela 0.6s ease-out 1.4s backwards;
-  }
+.bg {
+  animation: revela 1.1s ease-out backwards;
+}
+.t,
+.form {
+  animation: surge 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+}
+.t-data {
+  animation-delay: 0.18s;
+}
+.t-titulo {
+  animation-delay: 0.3s;
+}
+.t-prevenda {
+  animation-delay: 0.5s;
+}
+.form {
+  animation-delay: 0.62s;
+}
+.t-chamada {
+  animation-delay: 0.76s;
+}
+.som {
+  animation: revela 0.6s ease-out 1.4s backwards;
 }

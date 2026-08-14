@@ -9,7 +9,12 @@ export default function Home() {
       {/* Landing Page Web - Figma 4187:5543 (1920x971) */}
       <div className="frame web">
         {/* object e não img: o Chrome só roda as animações do SVG se ele for um documento */}
-        <object className="bg" data="/bg-web.svg" type="image/svg+xml" aria-hidden="true" />
+        <object
+          className="bg"
+          data="/bg-web.svg?v=15"
+          type="image/svg+xml"
+          aria-hidden="true"
+        />
         <h1 className="t t-data script">Dia 1O de Out</h1>
         <p className="t t-titulo script">Dia De Los Muertos</p>
         <p className="t t-prevenda script">Pré-venda</p>
@@ -21,7 +26,7 @@ export default function Home() {
       <div className="frame mob">
         <object
           className="bg"
-          data="/bg-mobile.svg"
+          data="/bg-mobile.svg?v=15"
           type="image/svg+xml"
           aria-hidden="true"
         />
