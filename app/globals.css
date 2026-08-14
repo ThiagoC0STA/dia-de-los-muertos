@@ -34,6 +34,29 @@ body {
   overflow-x: hidden;
 }
 
+/* barra de rolagem no tema */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: #6e2f28;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--fg);
+  border-radius: 8px;
+  border: 3px solid #6e2f28;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffe0b3;
+}
+/* Firefox (ignora os pseudo-elementos webkit) */
+@supports (-moz-appearance: none) {
+  html {
+    scrollbar-color: var(--fg) #6e2f28;
+    scrollbar-width: thin;
+  }
+}
+
 .frame {
   position: relative;
   overflow: hidden;
