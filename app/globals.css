@@ -5,12 +5,18 @@
 
 /*
  * Escala do design: 1rem = 100px do Figma.
- * Web  (frame 1920): 100/19.2 = 5.2083vw
- * Mobile (frame 1080): 100/10.8 = 9.2593vw
- * Toda medida abaixo é o valor do Figma dividido por 100.
+ *
+ * No desktop as peças são ancoradas nas bordas da tela, então o tamanho delas
+ * segue a altura (100vh / 9.71 = 10.2987vh) e a tela é preenchida em qualquer
+ * proporção. O segundo termo é o teto de largura (100vw / 13.4): sem ele, em
+ * telas estreitas o miolo cresceria até encostar nos esqueletos.
+ * Em 1920x971 o min() dá exatamente 100 e o desenho fica igual ao Figma.
+ *
+ * No mobile o quadro continua inteiro, escalado para caber (min entre largura
+ * e altura), porque a proporção do frame já bate com a de um celular.
  */
 html {
-  font-size: 5.2083vw;
+  font-size: min(10.2987vh, 7.4627vw);
 }
 
 * {
@@ -31,7 +37,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden;
+  /* com o frame sempre cabendo, rolagem só apareceria por arredondamento */
+  overflow: hidden;
 }
 
 /* barra de rolagem no tema */
@@ -67,19 +74,98 @@ body {
 .frame.mob {
   width: 10.8rem;
   height: 23.47rem;
+  display: none;
 }
 
-@media (max-width: 768px) {
-  html {
-    font-size: 9.2593vw;
+/* ---- palco: desktop recomposto, peças ancoradas nas bordas da tela ---- */
+.palco {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.peca,
+.confete {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+/* enfeite solto fica no fundo: esqueletos e miolo passam por cima dele */
+.confete {
+  z-index: 0;
+}
+.peca {
+  z-index: 1;
+}
+.miolo {
+  z-index: 2;
+}
+
+/* movimento leve: logo flutuando, enfeites cintilando, flores num pulso lento */
+.p-logo {
+  animation: flutua 6.5s ease-in-out infinite;
+}
+.confete {
+  animation: cintila 3.4s ease-in-out infinite;
+}
+.confete.graudo {
+  animation-name: pulsa;
+  animation-duration: 7s !important;
+}
+
+@keyframes flutua {
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  .frame.web {
-    display: none;
+  50% {
+    transform: translateY(-1%);
   }
 }
-@media (min-width: 769px) {
-  .frame.mob {
+@keyframes cintila {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes pulsa {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scale(0.99);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.015);
+  }
+}
+
+/* o miolo mantém a composição do Figma e fica colado no centro da tela */
+.miolo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/*
+ * A troca é por formato de tela, não por largura: o que decide é a página ser
+ * deitada ou em pé. Por largura, um tablet em pé (820px) caía no layout
+ * panorâmico e sobrava metade da tela vazia.
+ */
+@media (max-aspect-ratio: 95/100) {
+  html {
+    font-size: min(9.2593vw, 4.2607vh);
+  }
+  .palco {
     display: none;
+  }
+  .frame.mob {
+    display: block;
   }
 }
 
@@ -93,16 +179,26 @@ body {
   pointer-events: none;
 }
 
-/* efeito NOISE do frame web: monotone preto 25%, por cima de tudo */
+/*
+ * Efeito NOISE do frame web: monotone preto 25%.
+ * Fixo na viewport inteira, não só no frame: assim a sobra ao redor do desenho
+ * tem a mesma textura e lê como fundo, não como faixa vazia.
+ */
 .noise {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 2;
   pointer-events: none;
   opacity: 0.25;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 1.6rem 1.6rem;
+  background-size: 160px 160px;
+}
+
+@media (max-aspect-ratio: 95/100) {
+  .noise {
+    display: none;
+  }
 }
 
 /* ---- textos, nas coordenadas do Figma ---- */
@@ -127,28 +223,28 @@ body {
   text-transform: uppercase;
 }
 
-/* web */
-.web .t-data {
-  left: 8.21rem;
-  top: 2.11rem;
+/* desktop: coordenadas relativas ao miolo (x -733, y -42 do Figma) */
+.miolo .t-data {
+  left: 0.88rem;
+  top: 1.69rem;
   width: 2.78rem;
   height: 0.84rem;
   font-size: 0.48rem;
   line-height: 0.79rem;
   letter-spacing: 0.0144rem;
 }
-.web .t-titulo {
-  left: 7.36rem;
-  top: 2.89rem;
+.miolo .t-titulo {
+  left: 0.03rem;
+  top: 2.47rem;
   width: 4.47rem;
   height: 0.79rem;
   font-size: 0.58rem;
   line-height: 0.79rem;
   letter-spacing: 0.0174rem;
 }
-.web .t-prevenda {
-  left: 8.14rem;
-  top: 6.12rem;
+.miolo .t-prevenda {
+  left: 0.81rem;
+  top: 5.7rem;
   width: 2.91rem;
   height: 1.02rem;
   font-size: 0.54rem;
@@ -200,9 +296,9 @@ body {
   flex-direction: column;
 }
 
-.web .form {
-  left: 7.81rem;
-  top: 7.29rem;
+.miolo .form {
+  left: 0.48rem;
+  top: 6.87rem;
   width: 3.58rem;
   gap: 0.21rem;
 }
@@ -268,13 +364,13 @@ body {
   opacity: 0.7;
 }
 
-.web .form input {
+.miolo .form input {
   height: 0.5rem;
   font-size: 0.17rem;
   letter-spacing: 0.017rem;
   text-indent: 0.017rem;
 }
-.web .form button {
+.miolo .form button {
   height: 0.5rem;
   font-size: 0.21rem;
   letter-spacing: 0.126rem;
@@ -298,18 +394,6 @@ body {
 }
 
 /* ---- música de fundo ---- */
-/* o iframe precisa continuar renderizado (display:none pausa o player) */
-.player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 1px;
-  height: 1px;
-  border: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
 .som {
   position: fixed;
   z-index: 3;
@@ -346,7 +430,7 @@ body {
   color: var(--fg);
 }
 
-.web .msg {
+.miolo .msg {
   margin-top: 0.1rem;
   font-size: 0.14rem;
   letter-spacing: 0.014rem;

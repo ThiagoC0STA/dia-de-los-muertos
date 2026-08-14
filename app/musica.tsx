@@ -2,25 +2,28 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const VIDEO = "CEi5COj_QyA";
 const INICIO = 28;
 
 export default function Musica() {
-  const player = useRef<HTMLIFrameElement>(null);
+  const player = useRef<HTMLAudioElement>(null);
   const auto = useRef(true);
   const [mudo, setMudo] = useState(false);
 
   function tocar(silenciar: boolean) {
-    for (const func of ["playVideo", silenciar ? "mute" : "unMute"]) {
-      player.current?.contentWindow?.postMessage(
-        JSON.stringify({ event: "command", func, args: [] }),
-        "https://www.youtube.com",
-      );
-    }
     setMudo(silenciar);
+    const audio = player.current;
+    if (!audio) return;
+
+    audio.muted = silenciar;
+    if (!audio.paused) return;
+
+    // rede de segurança: se o #t= não pegou, posiciona antes de soltar o som
+    if (audio.currentTime < INICIO) audio.currentTime = INICIO;
+    // navegador só libera áudio depois de um gesto: antes disso o play é recusado
+    audio.play().catch(() => {});
   }
 
-  // navegador só libera áudio depois de um gesto: o primeiro toque na página liga o som
+  // primeiro toque em qualquer lugar da página libera o som
   useEffect(() => {
     function ligar(evento: PointerEvent) {
       const alvo = evento.target as HTMLElement;
@@ -35,20 +38,22 @@ export default function Musica() {
 
   function alternar() {
     auto.current = false;
-    tocar(!mudo);
+    // se ainda não tocou nada, este clique é o gesto que libera o áudio
+    tocar(player.current?.paused ? false : !mudo);
   }
 
   return (
     <>
-      <iframe
+      <audio
         ref={player}
-        className="player"
-        title="Música de fundo"
-        aria-hidden="true"
-        tabIndex={-1}
-        allow="autoplay"
-        onLoad={() => tocar(false)}
-        src={`https://www.youtube.com/embed/${VIDEO}?autoplay=1&mute=1&controls=0&loop=1&playlist=${VIDEO}&start=${INICIO}&enablejsapi=1&playsinline=1`}
+        // #t= é fragmento de mídia: o próprio browser já carrega posicionado,
+        // sem depender do React ter hidratado a tempo de ouvir o loadedmetadata
+        src={`/song.mp3#t=${INICIO}`}
+        preload="auto"
+        onEnded={(evento) => {
+          evento.currentTarget.currentTime = INICIO;
+          evento.currentTarget.play().catch(() => {});
+        }}
       />
       <button
         type="button"
