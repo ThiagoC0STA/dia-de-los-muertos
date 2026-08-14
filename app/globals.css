@@ -1,26 +1,384 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #96433a;
+  --fg: #f1c996;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/*
+ * Escala do design: 1rem = 100px do Figma.
+ * Web  (frame 1920): 100/19.2 = 5.2083vw
+ * Mobile (frame 1080): 100/10.8 = 9.2593vw
+ * Toda medida abaixo é o valor do Figma dividido por 100.
+ */
+html {
+  font-size: 5.2083vw;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  width: 19.2rem;
+  height: 9.71rem;
+}
+
+.frame.mob {
+  width: 10.8rem;
+  height: 23.47rem;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 9.2593vw;
+  }
+  .frame.web {
+    display: none;
+  }
+}
+@media (min-width: 769px) {
+  .frame.mob {
+    display: none;
+  }
+}
+
+/* fundo vetorial exportado do Figma */
+.bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* efeito NOISE do frame web: monotone preto 25%, por cima de tudo */
+.noise {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.25;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 1.6rem 1.6rem;
+}
+
+/* ---- textos, nas coordenadas do Figma ---- */
+.t {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--fg);
+  white-space: pre;
+}
+
+.script {
+  font-family: var(--font-felipa), cursive;
+  font-weight: 400;
+}
+
+.slab {
+  font-family: var(--font-epunda), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* web */
+.web .t-data {
+  left: 8.21rem;
+  top: 2.11rem;
+  width: 2.78rem;
+  height: 0.84rem;
+  font-size: 0.48rem;
+  line-height: 0.79rem;
+  letter-spacing: 0.0144rem;
+}
+.web .t-titulo {
+  left: 7.36rem;
+  top: 2.89rem;
+  width: 4.47rem;
+  height: 0.79rem;
+  font-size: 0.58rem;
+  line-height: 0.79rem;
+  letter-spacing: 0.0174rem;
+}
+.web .t-prevenda {
+  left: 8.14rem;
+  top: 6.12rem;
+  width: 2.91rem;
+  height: 1.02rem;
+  font-size: 0.54rem;
+  line-height: 1.02rem;
+}
+
+/* mobile */
+.mob .t-data {
+  left: 3.54rem;
+  top: 4.81rem;
+  width: 3.71rem;
+  height: 0.79rem;
+  font-size: 0.68rem;
+  line-height: 0.79rem;
+  letter-spacing: 0.0204rem;
+}
+.mob .t-titulo {
+  left: 2.01rem;
+  top: 5.96rem;
+  width: 6.78rem;
+  height: 0.79rem;
+  font-size: 0.88rem;
+  line-height: 0.79rem;
+  letter-spacing: 0.0264rem;
+}
+.mob .t-prevenda {
+  left: 2.3rem;
+  top: 13.3rem;
+  width: 6.2rem;
+  height: 2.17rem;
+  font-size: 1.14rem;
+  line-height: 2.17rem;
+}
+.mob .t-chamada {
+  left: 1.76rem;
+  top: 19.83rem;
+  width: 7.27rem;
+  height: 2.05rem;
+  font-size: 0.34rem;
+  line-height: 0.53rem;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+/* ---- formulário ---- */
+.form {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+.web .form {
+  left: 7.81rem;
+  top: 7.29rem;
+  width: 3.58rem;
+  gap: 0.21rem;
+}
+.mob .form {
+  left: 1.21rem;
+  top: 15.57rem;
+  width: 8.38rem;
+  gap: 0.39rem;
+}
+
+.form input,
+.form button {
+  font-family: var(--font-epunda), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  border-radius: 0.12rem;
+  border: 0.01rem solid var(--fg);
+  background: transparent;
+  color: var(--fg);
+  width: 100%;
+  appearance: none;
+  outline: none;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.18s ease,
+    filter 0.18s ease;
+}
+
+.form input::placeholder {
+  color: var(--fg);
+  opacity: 1;
+}
+
+.form input:hover {
+  background: rgb(241 201 150 / 0.06);
+}
+
+.form input:focus-visible {
+  box-shadow: 0 0 0 0.01rem var(--fg);
+  background: rgb(241 201 150 / 0.09);
+}
+
+.form button {
+  background: var(--fg);
+  color: var(--bg);
+  cursor: pointer;
+}
+
+.form button:hover:not(:disabled) {
+  transform: translateY(-0.02rem);
+  filter: brightness(1.07);
+  box-shadow: 0 0.03rem 0.1rem rgb(0 0 0 / 0.28);
+}
+
+.form button:active:not(:disabled) {
+  transform: translateY(0) scale(0.99);
+}
+
+.form button:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.web .form input {
+  height: 0.5rem;
+  font-size: 0.17rem;
+  letter-spacing: 0.017rem;
+  text-indent: 0.017rem;
+}
+.web .form button {
+  height: 0.5rem;
+  font-size: 0.21rem;
+  letter-spacing: 0.126rem;
+  text-indent: 0.126rem;
+}
+
+.mob .form input {
+  height: 0.95rem;
+  font-size: 0.31rem;
+  letter-spacing: 0.062rem;
+  text-indent: 0.062rem;
+}
+.mob .form input:nth-of-type(2) {
+  height: 0.94rem;
+}
+.mob .form button {
+  height: 0.95rem;
+  font-size: 0.41rem;
+  letter-spacing: 0.246rem;
+  text-indent: 0.246rem;
+}
+
+/* ---- música de fundo ---- */
+/* o iframe precisa continuar renderizado (display:none pausa o player) */
+.player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.som {
+  position: fixed;
+  z-index: 3;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  border: 1px solid var(--bg);
+  border-radius: 3px;
+  background: var(--fg);
+  color: var(--bg);
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.35);
+}
+
+.som:hover,
+.som:focus-visible {
+  background: var(--bg);
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
+.msg {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-epunda), serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.web .msg {
+  margin-top: 0.1rem;
+  font-size: 0.14rem;
+  letter-spacing: 0.014rem;
+}
+.mob .msg {
+  margin-top: 0.22rem;
+  font-size: 0.28rem;
+  letter-spacing: 0.028rem;
+}
+
+/* ---- entrada: tudo pousa no lugar exato do Figma ---- */
+@keyframes surge {
+  from {
+    opacity: 0;
+    transform: translateY(0.16rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes revela {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bg {
+    animation: revela 1.1s ease-out backwards;
+  }
+  .t,
+  .form {
+    animation: surge 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) backwards;
+  }
+  .t-data {
+    animation-delay: 0.18s;
+  }
+  .t-titulo {
+    animation-delay: 0.3s;
+  }
+  .t-prevenda {
+    animation-delay: 0.5s;
+  }
+  .form {
+    animation-delay: 0.62s;
+  }
+  .t-chamada {
+    animation-delay: 0.76s;
+  }
+  .som {
+    animation: revela 0.6s ease-out 1.4s backwards;
+  }
 }
