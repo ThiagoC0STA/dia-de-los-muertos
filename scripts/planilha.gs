@@ -12,7 +12,7 @@
  * Executar como "Eu", Quem pode acessar "Qualquer pessoa".
  */
 
-var CABECALHO = ["Data", "Nome", "WhatsApp"];
+var CABECALHO = ["Data", "Nome", "WhatsApp", "Nascimento"];
 
 function planilhaAlvo() {
   var planilha = SpreadsheetApp.getActiveSpreadsheet();
@@ -41,6 +41,7 @@ function doPost(e) {
     var dados = JSON.parse(e.postData.contents);
     var nome = String(dados.nome || "").trim();
     var whatsapp = String(dados.whatsapp || "").trim();
+    var nascimento = String(dados.nascimento || "").trim();
 
     if (!nome || !whatsapp) {
       return json({ ok: false, error: "dados incompletos" });
@@ -51,6 +52,7 @@ function doPost(e) {
       Utilities.formatDate(quando, "America/Sao_Paulo", "dd/MM/yyyy HH:mm"),
       nome,
       whatsapp,
+      nascimento,
     ]);
 
     return json({ ok: true });

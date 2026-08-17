@@ -11,6 +11,13 @@ const ROTULO: Record<Status, string> = {
   erro: "Enviar",
 };
 
+function mascaraData(valor: string): string {
+  const d = valor.replace(/\D/g, "").slice(0, 8);
+  if (d.length <= 2) return d;
+  if (d.length <= 4) return `${d.slice(0, 2)}/${d.slice(2)}`;
+  return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`;
+}
+
 function mascaraWhatsapp(valor: string): string {
   const d = valor.replace(/\D/g, "").slice(0, 11);
   if (d.length <= 2) return d;
@@ -23,6 +30,7 @@ export default function Form() {
   const [status, setStatus] = useState<Status>("idle");
   const [erro, setErro] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [nascimento, setNascimento] = useState("");
 
   async function enviar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,6 +46,7 @@ export default function Form() {
         body: JSON.stringify({
           nome: dados.get("nome"),
           whatsapp: dados.get("whatsapp"),
+          nascimento: dados.get("nascimento"),
         }),
       });
 
@@ -48,6 +57,7 @@ export default function Form() {
 
       formulario.reset();
       setWhatsapp("");
+      setNascimento("");
       setStatus("ok");
     } catch (error: unknown) {
       setErro(
@@ -78,6 +88,18 @@ export default function Form() {
         maxLength={16}
         value={whatsapp}
         onChange={(e) => setWhatsapp(mascaraWhatsapp(e.target.value))}
+      />
+      <input
+        name="nascimento"
+        placeholder="Data de nascimento"
+        aria-label="Data de nascimento (dia/mês/ano)"
+        autoComplete="bday"
+        inputMode="numeric"
+        required
+        minLength={10}
+        maxLength={10}
+        value={nascimento}
+        onChange={(e) => setNascimento(mascaraData(e.target.value))}
       />
       <button type="submit" disabled={status === "enviando"}>
         {ROTULO[status]}

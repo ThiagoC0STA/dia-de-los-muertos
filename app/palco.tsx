@@ -2,9 +2,11 @@ import Form from "./form";
 import palco from "./palco.json";
 
 const { W, H, pecas, confete } = palco;
+// versão dos arquivos em /rc: sobe quando uma peça muda, senão o navegador reaproveita a antiga
+const V = "?v=3";
 
-// bloco central: do topo do logo até a base do botão, colado no meio da tela
-const MIOLO = { x: 733, y: 42, w: 454, h: 879 };
+// bloco central: das velas (esq/dir) e do topo do logo à base do botão, colado no meio da tela
+const MIOLO = { x: 690, y: 30, w: 540, h: 905 };
 
 /** valor do design em rem (1rem = 100px do Figma) */
 const r = (v: number) => `${(v / 100).toFixed(4)}rem`;
@@ -56,7 +58,16 @@ const BORDAS = [
   "lat-e",
   "lat-d",
 ];
-const CENTRO = ["logo", "caveira", "vela-e", "vela-d"];
+// textos são vetores do Figma; a classe extra encaixa cada um na cascata de entrada
+const CENTRO: Array<[string, string, string]> = [
+  ["logo", "", ""],
+  ["txt-data", "t-data", "10 de Outubro"],
+  ["txt-titulo", "t-titulo", "Dia De Los Muertos"],
+  ["caveira", "", ""],
+  ["vela-e", "", ""],
+  ["vela-d", "", ""],
+  ["txt-cadastre", "t-prevenda", "Cadastre-se para pré-venda"],
+];
 const todas = pecas as Record<string, Peca>;
 
 export default function Palco() {
@@ -67,7 +78,7 @@ export default function Palco() {
         <img
           key={nome}
           className={`peca p-${nome}`}
-          src={`/rc/${nome}.svg`}
+          src={`/rc/${nome}.svg${V}`}
           style={ancorar(todas[nome])}
           alt=""
           aria-hidden="true"
@@ -79,7 +90,7 @@ export default function Palco() {
         <img
           key={i}
           className={c.grande ? "confete graudo" : "confete"}
-          src={`/rc/c-${c.f}.svg`}
+          src={`/rc/c-${c.f}.svg${V}`}
           style={{
             ...faixa(c.lado, c.fx),
             top: `${c.y}%`,
@@ -94,20 +105,18 @@ export default function Palco() {
       ))}
 
       <div className="miolo" style={{ width: r(MIOLO.w), height: r(MIOLO.h) }}>
-        {CENTRO.filter((nome) => nome in todas).map((nome) => (
+        <h1 className="sr-only">Dia De Los Muertos, 10 de outubro. Cadastre-se para a pré-venda</h1>
+        {CENTRO.filter(([nome]) => nome in todas).map(([nome, extra, alt]) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             key={nome}
-            className={`peca p-${nome}`}
-            src={`/rc/${nome}.svg`}
+            className={`peca p-${nome}${extra ? ` ${extra}` : ""}`}
+            src={`/rc/${nome}.svg${V}`}
             style={noMiolo(todas[nome])}
-            alt=""
-            aria-hidden="true"
+            alt={alt}
+            aria-hidden={alt ? undefined : true}
           />
         ))}
-        <h1 className="t t-data script">Dia 1O de Out</h1>
-        <p className="t t-titulo script">Dia De Los Muertos</p>
-        <p className="t t-prevenda script">Pré-venda</p>
         <Form />
       </div>
     </div>
