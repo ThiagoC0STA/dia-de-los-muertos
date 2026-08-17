@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const INICIO = 28;
+const INICIO = 0;
 
 export default function Musica() {
   const player = useRef<HTMLAudioElement>(null);
@@ -48,7 +48,7 @@ export default function Musica() {
         ref={player}
         // #t= é fragmento de mídia: o próprio browser já carrega posicionado,
         // sem depender do React ter hidratado a tempo de ouvir o loadedmetadata
-        src={`/song.mp3#t=${INICIO}`}
+        src={`/song2.mp3#t=${INICIO}`}
         preload="auto"
         onEnded={(evento) => {
           evento.currentTarget.currentTime = INICIO;
